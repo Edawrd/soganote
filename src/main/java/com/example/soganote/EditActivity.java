@@ -1,6 +1,7 @@
 package com.example.soganote;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -21,6 +22,15 @@ public class EditActivity extends Activity implements View.OnClickListener{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_activity);
+        iniView();
+        setClick();
+        if (savedInstanceState != null){
+            String tempData = savedInstanceState.getString("key");
+            editText.setText(tempData);
+        }
+    }
+
+    public void iniView(){
         backBtn = (Button) findViewById(R.id.back);
         photoBtn = (Button) findViewById(R.id.addPhoto);
         videoBtn = (Button) findViewById(R.id.addVideo);
@@ -28,6 +38,9 @@ public class EditActivity extends Activity implements View.OnClickListener{
         editText = (EditText) findViewById(R.id.editText);
         editPhoto = (ImageView) findViewById(R.id.editPhoto);
         editVideo = (ImageView) findViewById(R.id.editVideo);
+    }
+
+    public void setClick(){
         backBtn.setOnClickListener(this);
         photoBtn.setOnClickListener(this);
         videoBtn.setOnClickListener(this);
@@ -37,9 +50,11 @@ public class EditActivity extends Activity implements View.OnClickListener{
 
     @Override
     public void onClick(View view) {
+        Intent intent;
         switch (view.getId()){
             case R.id.back:
-
+                intent = new Intent(EditActivity.this,MainActivity.class);
+                startActivity(intent);
                 break;
             case R.id.addPhoto:
 
@@ -53,5 +68,14 @@ public class EditActivity extends Activity implements View.OnClickListener{
             default:
                 break;
         }
+
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        String tempData = editText.toString();
+        outState.putString("key",tempData);
     }
 }

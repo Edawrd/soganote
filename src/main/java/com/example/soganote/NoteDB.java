@@ -11,8 +11,11 @@ public class NoteDB extends SQLiteOpenHelper{
 
     public static final String CREATE_TABLE = "create table Note("
             +"id integer primary key autoincrement,"
-            +"content text,"
-            +"time text";
+            +"content text not null,"
+            +"time text not null,"
+            +"photo_path text not null,"
+            +"video_path text not null"
+            +")";
 
 
     public NoteDB(Context context) {
