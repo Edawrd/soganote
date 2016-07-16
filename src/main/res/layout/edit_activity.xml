@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/back"
-            android:text="返回"
+            android:text="取消"
             android:layout_weight="1"
             />
 
@@ -50,23 +50,28 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:id="@+id/edit_photo"
+            android:visibility="gone"
+            />
+
+        <VideoView
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:id="@+id/edit_video"
+            android:visibility="gone"/>
+
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/editText"
+            android:id="@+id/edit_text"
             android:hint="总想写点啥"
             android:background="@null"
             android:layout_gravity="top"
             />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/editPhoto"
-            />
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/editVideo"/>
     </LinearLayout>
 </LinearLayout>

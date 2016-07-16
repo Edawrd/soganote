@@ -1,13 +1,12 @@
 package com.example.soganote;
 
-import android.annotation.TargetApi;
-import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -15,9 +14,12 @@ import android.widget.ListView;
 public class MainActivity extends AppCompatActivity {
 
     private Button startEdit;
+    private ListView listView;
     private NoteDB noteDB;
     private SQLiteDatabase dbWriter;
-    private ListView listView;
+    private MyAdapter myAdapter;
+    private Cursor cursor;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,8 +27,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.main_activity);
         noteDB = new NoteDB(this);
         dbWriter = noteDB.getWritableDatabase();
-        addDB();
         startEdit = (Button) findViewById(R.id.start_edit);
+        listView = (ListView) findViewById(R.id.list);
         startEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -35,19 +37,35 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                cursor.moveToPosition(i);
+                Intent intent = new Intent(MainActivity.this,ShowActivity.class);
+                intent.putExtra("id",cursor.getInt(cursor.getColumnIndex("id")));
+                intent.putExtra("content",cursor.getString(cursor.getColumnIndex("content")));
+                intent.putExtra("photo_path",cursor.getString(cursor.getColumnIndex("photo_path")));
+                intent.putExtra("video_path",cursor.getString(cursor.getColumnIndex("video_path")));
+                startActivity(intent);
+
+
+            }
+        });
+
+
+    }
+    //获取全部数据并添加至ListView
+    public void getDB(){
+        cursor = dbWriter.query("Note",null,null,null,null,null,null);
+        myAdapter = new MyAdapter(this,cursor);
+        listView.setAdapter(myAdapter);
     }
 
-    public void addDB(){
-        ContentValues values = new ContentValues();
-        values.put("content","");
-        values.put("time",getTime());
-        dbWriter.insert("Note",null,values);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getDB();
     }
 
-    @TargetApi(Build.VERSION_CODES.N)
-    public String getTime(){
 
-        String str = System.currentTimeMillis()+"";
-        return str;
-    }
 }

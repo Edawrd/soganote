@@ -1,12 +1,25 @@
 package com.example.soganote;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
+import android.widget.VideoView;
+
+import java.io.File;
 
 /**
  * Created by Edward on 2016/7/13.
@@ -15,7 +28,12 @@ public class EditActivity extends Activity implements View.OnClickListener{
 
     private Button backBtn, photoBtn, videoBtn, commitBtn;
     private EditText editText;
-    private ImageView editPhoto, editVideo;
+    private ImageView editPhoto;
+    private VideoView editVideo;
+    private NoteDB noteDB;
+    private SQLiteDatabase dbWriter;
+    private File photoFile,videoFile;
+
 
 
     @Override
@@ -24,6 +42,24 @@ public class EditActivity extends Activity implements View.OnClickListener{
         setContentView(R.layout.edit_activity);
         iniView();
         setClick();
+        /*if (getIntent()!= null){
+            editText.setText(getIntent().getStringExtra("content"));
+            if (getIntent().getStringExtra("photo_path").equals("null")){
+                editPhoto.setVisibility(View.GONE);
+            }else {
+                editPhoto.setVisibility(View.VISIBLE);
+                Bitmap bitmap = BitmapFactory.decodeFile(getIntent().getStringExtra("photo_path"));
+                editPhoto.setImageBitmap(bitmap);
+            }
+            if (getIntent().getStringExtra("video_path").equals("null")){
+                editVideo.setVisibility(View.GONE);
+            }else {
+                editVideo.setVisibility(View.VISIBLE);
+                editVideo.setVideoURI(Uri.parse(getIntent().getStringExtra("video_path")));
+                editVideo.start();
+            }
+        }*/
+
         if (savedInstanceState != null){
             String tempData = savedInstanceState.getString("key");
             editText.setText(tempData);
@@ -35,9 +71,12 @@ public class EditActivity extends Activity implements View.OnClickListener{
         photoBtn = (Button) findViewById(R.id.addPhoto);
         videoBtn = (Button) findViewById(R.id.addVideo);
         commitBtn = (Button) findViewById(R.id.commit);
-        editText = (EditText) findViewById(R.id.editText);
-        editPhoto = (ImageView) findViewById(R.id.editPhoto);
-        editVideo = (ImageView) findViewById(R.id.editVideo);
+        editText = (EditText) findViewById(R.id.edit_text);
+        editPhoto = (ImageView) findViewById(R.id.edit_photo);
+        editVideo = (VideoView) findViewById(R.id.edit_video);
+        noteDB = new NoteDB(this);
+        dbWriter = noteDB.getWritableDatabase();
+
     }
 
     public void setClick(){
@@ -53,17 +92,26 @@ public class EditActivity extends Activity implements View.OnClickListener{
         Intent intent;
         switch (view.getId()){
             case R.id.back:
-                intent = new Intent(EditActivity.this,MainActivity.class);
-                startActivity(intent);
+                finish();
                 break;
-            case R.id.addPhoto:
-
+            case R.id.addPhoto://启动照相
+                intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                photoFile = new File(Environment.getExternalStorageDirectory().getAbsoluteFile()+"/"
+                        +getTime()+".jpg");
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+                startActivityForResult(intent,1);
                 break;
-            case R.id.addVideo:
-
+            case R.id.addVideo://启动录像
+                intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+                videoFile = new File(Environment.getExternalStorageDirectory().getAbsoluteFile()+"/"
+                        +getTime()+".mp4");
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(videoFile));
+                startActivityForResult(intent,2);
                 break;
             case R.id.commit:
-
+                if ( addDB()){
+                    finish();
+                }
                 break;
             default:
                 break;
@@ -72,10 +120,51 @@ public class EditActivity extends Activity implements View.OnClickListener{
 
     }
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1){
+            Bitmap bitmap = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
+            editPhoto.setImageBitmap(bitmap);
+        }else  if (requestCode == 2){
+            editVideo.setVideoURI(Uri.fromFile(videoFile));
+            editVideo.start();
+        }
+    }
+
+    //简易草稿功能   暂未成功！！
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        String tempData = editText.toString();
+        String tempData = editText.getText().toString();
         outState.putString("key",tempData);
+    }
+
+    //向table中添加数据
+    public boolean addDB(){
+        ContentValues values = new ContentValues();
+        //判断有无内容
+        if (!(editText.getText().toString()).equals("")|| videoFile != null || photoFile != null){
+            values.put("content",editText.getText().toString());
+            values.put("time",getTime());
+            values.put("photo_path",photoFile+"");
+            values.put("video_path",videoFile+"");
+            dbWriter.insert("Note",null,values);
+            return true;
+        }
+        Toast.makeText(this,"请输入内容",Toast.LENGTH_SHORT).show();
+        return false;
+
+    }
+
+    //获取当前时间     未完成！！！
+    @TargetApi(Build.VERSION_CODES.N)
+    public String getTime(){
+        /*long t = System.currentTimeMillis();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(t);*/
+        String str = System.currentTimeMillis()+"";
+        return str;
     }
 }

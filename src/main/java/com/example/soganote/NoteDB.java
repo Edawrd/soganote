@@ -9,17 +9,18 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class NoteDB extends SQLiteOpenHelper{
 
+    Context context;
+
     public static final String CREATE_TABLE = "create table Note("
             +"id integer primary key autoincrement,"
-            +"content text not null,"
-            +"time text not null,"
-            +"photo_path text not null,"
-            +"video_path text not null"
-            +")";
-
+            +"content text,"
+            +"time text,"
+            +"photo_path text,"
+            +"video_path text)";
 
     public NoteDB(Context context) {
-        super(context, "note", null, 1);
+        super(context, "Note", null, 1);
+        this.context = context;
     }
 
     @Override
