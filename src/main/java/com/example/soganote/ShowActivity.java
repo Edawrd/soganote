@@ -8,7 +8,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.VideoView;
@@ -18,7 +18,7 @@ import android.widget.VideoView;
  */
 public class ShowActivity extends Activity implements View.OnClickListener {
 
-    private Button backBtn, editBtn, deleteBtn;
+    private ImageButton backBtn, editBtn, deleteBtn;
     private TextView showText, showTime;
     private VideoView showVideo;
     private ImageView showPhoto;
@@ -36,9 +36,9 @@ public class ShowActivity extends Activity implements View.OnClickListener {
     }
 
     public void ini() {
-        backBtn = (Button) findViewById(R.id.show_back);
-        editBtn = (Button) findViewById(R.id.show_edit);
-        deleteBtn = (Button) findViewById(R.id.show_delete);
+        backBtn = (ImageButton) findViewById(R.id.show_back);
+        editBtn = (ImageButton) findViewById(R.id.show_edit);
+        deleteBtn = (ImageButton) findViewById(R.id.show_delete);
         showText = (TextView) findViewById(R.id.show_text);
         showTime = (TextView) findViewById(R.id.show_time);
         showVideo = (VideoView) findViewById(R.id.show_video);
@@ -77,7 +77,7 @@ public class ShowActivity extends Activity implements View.OnClickListener {
                 finish();
                 break;
             case R.id.show_delete:
-                dbWriter.delete("Note","id="+getIntent().getIntExtra("id",0),null);
+                dbDelte();
                 finish();
                 break;
             default:
@@ -91,7 +91,12 @@ public class ShowActivity extends Activity implements View.OnClickListener {
         intent.putExtra("content",getIntent().getStringExtra("content"));
         intent.putExtra("photo_path",getIntent().getStringExtra("photo_path"));
         intent.putExtra("video_path",getIntent().getStringExtra("video_path"));
+        intent.putExtra("fromShowAty","reEdit");
         startActivity(intent);
+    }
+
+    public void dbDelte(){
+        dbWriter.delete("Note","id="+getIntent().getIntExtra("id",0),null);
     }
 }
 

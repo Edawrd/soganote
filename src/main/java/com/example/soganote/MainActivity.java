@@ -6,14 +6,15 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button startEdit;
+    private ImageButton startEdit;
     private ListView listView;
     private NoteDB noteDB;
     private SQLiteDatabase dbWriter;
@@ -24,10 +25,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.main_activity);
         noteDB = new NoteDB(this);
         dbWriter = noteDB.getWritableDatabase();
-        startEdit = (Button) findViewById(R.id.start_edit);
+        startEdit = (ImageButton) findViewById(R.id.start_edit);
         listView = (ListView) findViewById(R.id.list);
         startEdit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
 
 
     }

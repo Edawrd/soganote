@@ -8,41 +8,47 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
-    tools:context="com.example.soganote.MainActivity">
+    tools:context="com.example.soganote.MainActivity"
+    android:background="@drawable/background">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        >
 
-        <Button
+        <ImageButton
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/back"
-            android:text="取消"
+            android:src="@drawable/back"
             android:layout_weight="1"
+            android:background="#00000000"
             />
 
-        <Button
+        <ImageButton
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/addPhoto"
             android:layout_weight="1"
-            android:text="添加图片"/>
-        <Button
+            android:src="@drawable/edit_photo"
+            android:background="#00000000"/>
+        <ImageButton
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/addVideo"
-            android:text="添加视频"
+            android:src="@drawable/edit_video"
             android:layout_weight="1"
+            android:background="#00000000"
             />
 
-        <Button
+        <ImageButton
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/commit"
-            android:text="确定"
-            android:layout_weight="1"/>
+            android:src="@drawable/commit"
+            android:layout_weight="1"
+            android:background="#00000000"/>
 
     </LinearLayout>
 
@@ -68,9 +74,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/edit_text"
-            android:hint="总想写点啥"
+            android:hint="总想写点啥..."
+            android:textColorHint="#6b6b6b"
             android:background="@null"
             android:layout_gravity="top"
+            android:textSize="22dp"
+            android:textColor="#000000"
             />
 
     </LinearLayout>

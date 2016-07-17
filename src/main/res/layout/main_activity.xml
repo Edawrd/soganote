@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,13 +14,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/list"
+
             ></ListView>
     </LinearLayout>
 
-    <Button
+    <ImageButton
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:id="@+id/start_edit"
-        android:text="开始编辑" />
+        android:src="@drawable/edit"
+        android:background="#00000000"/>
 
 </LinearLayout>

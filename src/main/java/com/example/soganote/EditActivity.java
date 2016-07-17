@@ -13,8 +13,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -26,7 +26,7 @@ import java.io.File;
  */
 public class EditActivity extends Activity implements View.OnClickListener{
 
-    private Button backBtn, photoBtn, videoBtn, commitBtn;
+    private ImageButton backBtn, photoBtn, videoBtn, commitBtn;
     private EditText editText;
     private ImageView editPhoto;
     private VideoView editVideo;
@@ -42,7 +42,7 @@ public class EditActivity extends Activity implements View.OnClickListener{
         setContentView(R.layout.edit_activity);
         iniView();
         setClick();
-        /*if (getIntent()!= null){
+        if (getIntent().getStringExtra("content")!= null){
             editText.setText(getIntent().getStringExtra("content"));
             if (getIntent().getStringExtra("photo_path").equals("null")){
                 editPhoto.setVisibility(View.GONE);
@@ -58,7 +58,8 @@ public class EditActivity extends Activity implements View.OnClickListener{
                 editVideo.setVideoURI(Uri.parse(getIntent().getStringExtra("video_path")));
                 editVideo.start();
             }
-        }*/
+
+        }
 
         if (savedInstanceState != null){
             String tempData = savedInstanceState.getString("key");
@@ -67,10 +68,10 @@ public class EditActivity extends Activity implements View.OnClickListener{
     }
 
     public void iniView(){
-        backBtn = (Button) findViewById(R.id.back);
-        photoBtn = (Button) findViewById(R.id.addPhoto);
-        videoBtn = (Button) findViewById(R.id.addVideo);
-        commitBtn = (Button) findViewById(R.id.commit);
+        backBtn = (ImageButton) findViewById(R.id.back);
+        photoBtn = (ImageButton) findViewById(R.id.addPhoto);
+        videoBtn = (ImageButton) findViewById(R.id.addVideo);
+        commitBtn = (ImageButton) findViewById(R.id.commit);
         editText = (EditText) findViewById(R.id.edit_text);
         editPhoto = (ImageView) findViewById(R.id.edit_photo);
         editVideo = (VideoView) findViewById(R.id.edit_video);
@@ -146,11 +147,16 @@ public class EditActivity extends Activity implements View.OnClickListener{
         ContentValues values = new ContentValues();
         //判断有无内容
         if (!(editText.getText().toString()).equals("")|| videoFile != null || photoFile != null){
+
             values.put("content",editText.getText().toString());
             values.put("time",getTime());
             values.put("photo_path",photoFile+"");
             values.put("video_path",videoFile+"");
-            dbWriter.insert("Note",null,values);
+            if ((getIntent().getStringExtra("fromShowAty")).equals("reEdit")){
+                dbWriter.update("Note",values,"id = "+getIntent().getIntExtra("id",0),null);
+            }else{
+                dbWriter.insert("Note",null,values);
+            }
             return true;
         }
         Toast.makeText(this,"请输入内容",Toast.LENGTH_SHORT).show();
